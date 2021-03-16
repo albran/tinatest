@@ -1,3 +1,5 @@
+const basicAuth = require("express-basic-auth")
+
 module.exports = {
   siteMetadata: {
     title: `Gatsby Starter Blog`,
@@ -8,14 +10,35 @@ module.exports = {
       twitter: `kylemathews`,
     },
   },
+  developMiddleware: app => {
+    app.use(
+      basicAuth({
+        users: { test: "test" },
+        challenge: true,
+        realm: "your app name",
+      })
+    )
+  },
   plugins: [
     {
       resolve: "gatsby-plugin-tinacms",
       options: {
-        plugins: ["gatsby-tinacms-git", "gatsby-tinacms-remark", "gatsby-tinacms-json",],
+        plugins: [
+          {
+            resolve: "gatsby-tinacms-git",
+            options: {
+              gitRemote: "git@github.com:albran/tinatest.git",
+              defaultCommitMessage: "Edited with TinaCMS",
+              defaultCommitName: "Cloud Editor",
+              defaultCommitEmail: "al.brancozzi@gmail.com",
+            },
+          },
+          "gatsby-tinacms-remark",
+          "gatsby-tinacms-json",
+        ],
         sidebar: {
           hidden: process.env.NODE_ENV === "production",
-          position: "displace"
+          position: "displace",
         },
       },
     },
